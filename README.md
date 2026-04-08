@@ -1,16 +1,56 @@
-# React + Vite
+🌐 Personal Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🔗 Live Demo: https://portfolio-theta-flax-61.vercel.app/
 
-Currently, two official plugins are available:
+A modern and responsive personal portfolio built with React, showcasing my projects, skills, and experience as a developer. This website reflects my ability to build clean, interactive, and user-friendly web applications.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🚀 Features
+🧑‍💻 Interactive About Me section
+🛠️ Detailed Skills & Tech Stack
+📂 Projects showcase with live demos
+📞 Functional Contact section
+📱 Fully responsive (mobile-first design)
+⚡ Smooth UI with modern React practices
+🛠️ Tech Stack
+Frontend: React.js, JavaScript (ES6+)
+Styling: CSS / Tailwind CSS
+Tools: Git, GitHub, Vercel
+Deployment: Vercel
+⚙️ Installation & Setup
 
-## React Compiler
+Run this project locally:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# Clone the repository
+git clone https://github.com/your-username/your-portfolio.git
 
-## Expanding the ESLint configuration
+# Go into the folder
+cd your-portfolio
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+🌍 Deployment
+
+This project is deployed on Vercel for fast and seamless performance.
+
+📈 Future Improvements
+Add animations using Framer Motion
+Integrate backend for contact form
+Add blog / articles section
+Improve accessibility (a11y)
+🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+📬 Contact
+
+Feel free to connect with me:
+
+LinkedIn
+Email
+GitHub
+⭐ Support
+
+If you like this project, give it a ⭐ on GitHub!
