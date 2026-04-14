@@ -14,7 +14,7 @@ const skillIconMap = {
   'n8n': 'n8n',
   'Git': 'git',
   'Netlify': 'netlify',
-  'CI/CD': 'githubactions',
+  'CI/CD': 'withoutlogo',
   'Docker': 'docker',
   'API Integration': 'withoutlogo',
   'AI Integration': 'withoutlogo',
