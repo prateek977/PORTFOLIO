@@ -63,32 +63,17 @@ const ProjectCard = ({ title, description, tags, link, github, isFeatured, numbe
             }[tag] || tag.toLowerCase().replace(/ /g, '');
 
             return (
-              <span key={tag} title={tag} style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              <span key={tag} style={{
+                fontSize: '0.8rem',
+                padding: '0.4rem 1rem',
+                borderRadius: '20px',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid var(--border-color)',
-                transition: 'var(--transition-smooth)',
-                padding: '6px'
+                color: 'var(--text-secondary)',
+                fontWeight: '500',
+                transition: 'var(--transition-smooth)'
               }}>
-                <img 
-                  src={`https://cdn.simpleicons.org/${iconSlug}`} 
-                  alt="" 
-                  style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: 0.9 }}
-                  onError={(e) => { 
-                    const fallbackSlug = {
-                      'css3': 'css',
-                      'javascript': 'js',
-                      'html5': 'html',
-                      'python': 'py',
-                    }[iconSlug] || iconSlug;
-                    e.target.src = `https://skillicons.dev/icons?i=${fallbackSlug}`; 
-                  }}
-                />
+                {tag}
               </span>
             );
           })}

@@ -68,12 +68,13 @@ const SkillCard = ({ title, skills, delay }) => (
             <img 
               src={`https://cdn.simpleicons.org/${iconSlug}`} 
               alt=""
-              style={{ width: '28px', height: '28px', objectFit: 'contain', opacity: 0.9 }}
+              style={{ width: '22px', height: '22px', objectFit: 'contain' }}
               onError={(e) => { 
                 const fallbackSlug = fallbackMap[iconSlug] || iconSlug;
                 e.target.src = `https://skillicons.dev/icons?i=${fallbackSlug}`; 
               }}
             />
+            <span style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: '500' }}>{skill}</span>
           </motion.div>
         );
       })}
