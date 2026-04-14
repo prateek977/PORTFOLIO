@@ -45,23 +45,53 @@ const ProjectCard = ({ title, description, tags, link, github, isFeatured, numbe
         flexDirection: 'column',
         position: 'relative',
       }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1.5rem' }}>
-          {tags.map(tag => (
-            <span key={tag} style={{
-              fontSize: '0.6rem',
-              color: 'var(--text-secondary)',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              padding: '0.3rem 0.8rem',
-              borderRadius: '6px',
-              border: '1px solid var(--border-color)',
-              fontWeight: '700',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              transition: 'var(--transition-smooth)'
-            }}>
-              {tag}
-            </span>
-          ))}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.5rem' }}>
+          {tags.map(tag => {
+            const iconSlug = {
+              'React': 'react',
+              'JS': 'javascript',
+              'Vite': 'vite',
+              'n8n': 'n8n',
+              'Python': 'python',
+              'HTML': 'html5',
+              'CSS': 'css3',
+              'REST API': 'postman',
+              'Netlify': 'netlify',
+              'Framer Motion': 'framer',
+              'Music Streaming': 'itunes',
+              'LeetCode API': 'leetcode',
+            }[tag] || tag.toLowerCase().replace(/ /g, '');
+
+            return (
+              <span key={tag} title={tag} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid var(--border-color)',
+                transition: 'var(--transition-smooth)',
+                padding: '6px'
+              }}>
+                <img 
+                  src={`https://cdn.simpleicons.org/${iconSlug}`} 
+                  alt="" 
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: 0.9 }}
+                  onError={(e) => { 
+                    const fallbackSlug = {
+                      'css3': 'css',
+                      'javascript': 'js',
+                      'html5': 'html',
+                      'python': 'py',
+                    }[iconSlug] || iconSlug;
+                    e.target.src = `https://skillicons.dev/icons?i=${fallbackSlug}`; 
+                  }}
+                />
+              </span>
+            );
+          })}
         </div>
 
         <h3 style={{
@@ -135,7 +165,7 @@ const Projects = () => {
       title: 'Vibe Tunes',
       description: 'A music streaming platform that allows users to listen to their favorite songs and discover new music. Built with React and optimized for real-time interactions.',
       tags: ['React', 'Music Streaming', 'Framer Motion'],
-      link: 'https://vibe-tunes.netlify.app/',
+      link: '#',
       github: 'https://github.com/prateek977/Vibe-Tunes-',
       isFeatured: true
     },

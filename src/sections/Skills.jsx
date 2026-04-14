@@ -2,6 +2,34 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { skillsGroups } from '../data/skillsData';
 
+// Mapping for skill icons (Simple Icons slugs)
+const skillIconMap = {
+  'HTML': 'html5',
+  'CSS': 'css3',
+  'JS': 'javascript',
+  'React': 'react',
+  'Python': 'python',
+  'Java': 'openjdk',
+  'REST APIs': 'postman',
+  'n8n': 'n8n',
+  'API Integration': 'amazonservices',
+  'Git': 'git',
+  'Netlify': 'netlify',
+  'CI/CD': 'githubactions',
+  'Docker': 'docker',
+  'AI Integration': 'openai',
+  'Chatbots': 'botpress',
+  'Image Gen APIs': 'pinnacle',
+};
+
+const fallbackMap = {
+  'css3': 'css',
+  'javascript': 'js',
+  'html5': 'html',
+  'python': 'py',
+  'openjdk': 'java',
+};
+
 const SkillCard = ({ title, skills, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -18,25 +46,37 @@ const SkillCard = ({ title, skills, delay }) => (
     }}
   >
     <h3 style={{ fontSize: '1.4rem', marginBottom: '1.2rem', color: '#fff' }}>{title}</h3>
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
-      {skills.map((skill, idx) => (
-        <motion.span
-          key={idx}
-          whileHover={{ scale: 1.05, backgroundColor: 'var(--accent-glow)', color: 'var(--accent-color)' }}
-          style={{
-            fontSize: '0.8rem',
-            padding: '0.35rem 0.9rem',
-            borderRadius: '50px',
-            backgroundColor: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            color: 'var(--text-secondary)',
-            fontWeight: '500',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          {skill}
-        </motion.span>
-      ))}
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+      {skills.map((skill, idx) => {
+        const iconSlug = skillIconMap[skill] || skill.toLowerCase().replace(/ /g, '');
+        return (
+          <motion.div
+            key={idx}
+            whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'var(--accent-color)' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              fontSize: '0.85rem',
+              padding: '0.5rem 1rem',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <img 
+              src={`https://cdn.simpleicons.org/${iconSlug}`} 
+              alt=""
+              style={{ width: '28px', height: '28px', objectFit: 'contain', opacity: 0.9 }}
+              onError={(e) => { 
+                const fallbackSlug = fallbackMap[iconSlug] || iconSlug;
+                e.target.src = `https://skillicons.dev/icons?i=${fallbackSlug}`; 
+              }}
+            />
+          </motion.div>
+        );
+      })}
     </div>
   </motion.div>
 );
