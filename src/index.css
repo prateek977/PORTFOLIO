@@ -3,9 +3,8 @@
   --card-bg: #16161a;
   --text-primary: #fafafa;
   --text-secondary: #9494a3;
-  --accent-color: #000080;
-  /* Solid Navy Blue */
-  /* --accent-glow: rgba(0, 0, 128, 0.25); */
+  --accent-color: rgb(0, 81, 157);
+  --accent-glow: rgba(0, 81, 157, 0.25);
   --font-heading: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
   --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);

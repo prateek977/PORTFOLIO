@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import heroPortrait from '../assets/hero-portrait.png';
+import FloatingSkillTags from '../components/FloatingSkillTags';
 
 const Hero = () => {
   return (
@@ -164,7 +165,7 @@ const Hero = () => {
           }}
           className="hero-image-container"
         >
-
+          <FloatingSkillTags />
           <motion.img
             src={heroPortrait}
             alt="Prateek Jaiswal"
@@ -174,14 +175,6 @@ const Hero = () => {
               position: 'relative',
               zIndex: 1,
               filter: 'drop-shadow(0 20px 50px rgba(0,0,0,0.5))'
-            }}
-            animate={{
-              y: [0, -20, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut"
             }}
           />
         </motion.div>

@@ -46,13 +46,13 @@ const About = () => {
             </h2>
             <div style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.8' }}>
               <p style={{ marginBottom: '1.5rem' }}>
-                I am a passionate <span style={{ color: '#fff', fontWeight: '600' }}>Web Developer</span> dedicated to building high-performance, visually stunning applications. With a focus on modern frontend technologies and seamless user experiences, I turn complex ideas into functional digital products.
+                I’m a <span style={{ color: '#fff', fontWeight: '600' }}>Frontend Developer</span> focused on building fast, scalable, and visually engaging web applications. I specialize in turning complex ideas into clean, intuitive user experiences using modern technologies like React and JavaScript.
               </p>
               <p style={{ marginBottom: '1.5rem' }}>
-                My expertise spans across <span style={{ color: '#fff', fontWeight: '600' }}>React, JavaScript, and API Integration</span>. I specialize in bridging the gap between design and functionality, ensuring every project is not only beautiful but also robust and scalable.
+                With a strong understanding of <span style={{ color: '#fff', fontWeight: '600' }}>API integration and UI/UX principles</span>, I bridge the gap between design and functionality—ensuring products are not only aesthetically refined but also reliable and performant.
               </p>
               <p>
-                Beyond coding, I'm an advocate for <span style={{ color: '#fff', fontWeight: '600' }}>workflow automation</span> using tools like n8n. I believe in the power of technology to simplify processes and enhance productivity, and I'm always looking for innovative ways to integrate AI into my development stack.
+                Beyond development, I actively explore <span style={{ color: '#fff', fontWeight: '600' }}>workflow automation</span> using tools like n8n and experiment with AI-driven solutions to build smarter, more efficient systems.
               </p>
             </div>
           </motion.div>
