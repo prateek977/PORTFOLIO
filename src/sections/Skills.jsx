@@ -12,14 +12,14 @@ const skillIconMap = {
   'Java': 'openjdk',
   'REST APIs': 'postman',
   'n8n': 'n8n',
-  'API Integration': 'amazonservices',
   'Git': 'git',
   'Netlify': 'netlify',
   'CI/CD': 'githubactions',
   'Docker': 'docker',
-  'AI Integration': 'openai',
-  'Chatbots': 'botpress',
-  'Image Gen APIs': 'pinnacle',
+  'API Integration': 'withoutlogo',
+  'AI Integration': 'withoutlogo',
+  'Chatbots': 'withoutlogo',
+  'Image Gen APIs': 'withoutlogo',
 };
 
 const fallbackMap = {
@@ -28,6 +28,47 @@ const fallbackMap = {
   'html5': 'html',
   'python': 'py',
   'openjdk': 'java',
+};
+
+const SkillItem = ({ skill, iconSlug }) => {
+  const [hasLogo, setHasLogo] = React.useState(iconSlug !== 'withoutlogo');
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'var(--accent-color)' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: hasLogo ? '0.6rem' : '0',
+        fontSize: '0.85rem',
+        padding: '0.5rem 1rem',
+        borderRadius: '12px',
+        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.05)',
+        transition: 'all 0.3s ease'
+      }}
+    >
+      {hasLogo && (
+        <img
+          src={`https://cdn.simpleicons.org/${iconSlug}`}
+          alt=""
+          style={{ width: '22px', height: '22px', objectFit: 'contain' }}
+          onError={(e) => {
+            const fallbackSlug = fallbackMap[iconSlug] || iconSlug;
+            const fallbackUrl = `https://skillicons.dev/icons?i=${fallbackSlug}`;
+
+            // If the fallback also fails, hide the logo entirely
+            if (e.target.src === fallbackUrl) {
+              setHasLogo(false);
+            } else {
+              e.target.src = fallbackUrl;
+            }
+          }}
+        />
+      )}
+      <span style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: '500' }}>{skill}</span>
+    </motion.div>
+  );
 };
 
 const SkillCard = ({ title, skills, delay }) => (
@@ -49,34 +90,7 @@ const SkillCard = ({ title, skills, delay }) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
       {skills.map((skill, idx) => {
         const iconSlug = skillIconMap[skill] || skill.toLowerCase().replace(/ /g, '');
-        return (
-          <motion.div
-            key={idx}
-            whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'var(--accent-color)' }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              fontSize: '0.85rem',
-              padding: '0.5rem 1rem',
-              borderRadius: '12px',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            <img 
-              src={`https://cdn.simpleicons.org/${iconSlug}`} 
-              alt=""
-              style={{ width: '22px', height: '22px', objectFit: 'contain' }}
-              onError={(e) => { 
-                const fallbackSlug = fallbackMap[iconSlug] || iconSlug;
-                e.target.src = `https://skillicons.dev/icons?i=${fallbackSlug}`; 
-              }}
-            />
-            <span style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: '500' }}>{skill}</span>
-          </motion.div>
-        );
+        return <SkillItem key={idx} skill={skill} iconSlug={iconSlug} />;
       })}
     </div>
   </motion.div>

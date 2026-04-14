@@ -2,6 +2,68 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Code, ArrowUpRight } from 'lucide-react';
 
+const fallbackMap = {
+  'css3': 'css',
+  'javascript': 'js',
+  'html5': 'html',
+  'python': 'py',
+  'openjdk': 'java',
+};
+
+const ProjectTag = ({ tag }) => {
+  const iconMap = {
+    'React': 'react',
+    'JS': 'javascript',
+    'Vite': 'vite',
+    'n8n': 'n8n',
+    'Python': 'python',
+    'HTML': 'html5',
+    'CSS': 'css3',
+    'REST API': 'withoutlogo',
+    'Netlify': 'netlify',
+    'Framer Motion': 'framer',
+    'Music Streaming': 'withoutlogo',
+    'LeetCode API': 'leetcode',
+  };
+
+  const iconSlug = iconMap[tag] || tag.toLowerCase().replace(/ /g, '');
+  const [hasLogo, setHasLogo] = React.useState(iconSlug !== 'withoutlogo');
+
+  return (
+    <span style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: hasLogo ? '0.5rem' : '0',
+      fontSize: '0.8rem',
+      padding: '0.4rem 1rem',
+      borderRadius: '20px',
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      border: '1px solid var(--border-color)',
+      color: 'var(--text-secondary)',
+      fontWeight: '500',
+      transition: 'var(--transition-smooth)'
+    }}>
+      {hasLogo && (
+        <img
+          src={`https://cdn.simpleicons.org/${iconSlug}`}
+          alt=""
+          style={{ width: '16px', height: '16px', objectFit: 'contain' }}
+          onError={(e) => {
+            const fallbackSlug = fallbackMap[iconSlug] || iconSlug;
+            const fallbackUrl = `https://skillicons.dev/icons?i=${fallbackSlug}`;
+            if (e.target.src === fallbackUrl) {
+              setHasLogo(false);
+            } else {
+              e.target.src = fallbackUrl;
+            }
+          }}
+        />
+      )}
+      {tag}
+    </span>
+  );
+};
+
 const ProjectCard = ({ title, description, tags, link, github, isFeatured, number }) => {
   return (
     <motion.div
@@ -46,37 +108,9 @@ const ProjectCard = ({ title, description, tags, link, github, isFeatured, numbe
         position: 'relative',
       }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.5rem' }}>
-          {tags.map(tag => {
-            const iconSlug = {
-              'React': 'react',
-              'JS': 'javascript',
-              'Vite': 'vite',
-              'n8n': 'n8n',
-              'Python': 'python',
-              'HTML': 'html5',
-              'CSS': 'css3',
-              'REST API': 'postman',
-              'Netlify': 'netlify',
-              'Framer Motion': 'framer',
-              'Music Streaming': 'itunes',
-              'LeetCode API': 'leetcode',
-            }[tag] || tag.toLowerCase().replace(/ /g, '');
-
-            return (
-              <span key={tag} style={{
-                fontSize: '0.8rem',
-                padding: '0.4rem 1rem',
-                borderRadius: '20px',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-secondary)',
-                fontWeight: '500',
-                transition: 'var(--transition-smooth)'
-              }}>
-                {tag}
-              </span>
-            );
-          })}
+          {tags.map(tag => (
+            <ProjectTag key={tag} tag={tag} />
+          ))}
         </div>
 
         <h3 style={{
