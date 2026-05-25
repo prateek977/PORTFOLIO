@@ -182,9 +182,9 @@ const Projects = () => {
     {
       number: '01',
       title: 'Vibe Tunes',
-      description: 'A music streaming platform that allows users to listen to their favorite songs and discover new music. Built with React and optimized for real-time interactions.',
+      description: 'A mood-based music discovery platform that helps users find songs matching their emotions and vibe. Built with React and optimized for seamless real-time music search and personalized recommendations.',
       tags: ['React', 'Music Streaming', 'Framer Motion'],
-      link: '#',
+      link: 'https://vibe-tunes.netlify.app/',
       github: 'https://github.com/prateek977/Vibe-Tunes-',
       isFeatured: true
     },
