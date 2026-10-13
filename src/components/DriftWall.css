@@ -1,0 +1,284 @@
+.drift-wall {
+  position: relative;
+  width: 100%;
+  height: 720px;
+  min-height: 720px;
+  overflow: hidden;
+  perspective: var(--dw-perspective, 1400px);
+  perspective-origin: 50% 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  --dw-tile-w: 285px;
+  --dw-tile-h: 160px;
+  --dw-gap: 22px;
+  --dw-radius: 14px;
+  --dw-lift: 32px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 7%,
+    black 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 7%,
+    black 93%,
+    transparent 100%
+  );
+}
+
+.drift-wall__plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: var(--dw-gap, 22px);
+  transform-style: preserve-3d;
+  cursor: grab;
+  will-change: transform;
+}
+
+.drift-wall__plane:active {
+  cursor: grabbing;
+}
+
+.drift-wall__col {
+  position: relative;
+  width: var(--dw-tile-w, 285px);
+  flex: 0 0 var(--dw-tile-w, 285px);
+  transform-style: preserve-3d;
+}
+
+.drift-wall__track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dw-gap, 22px);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.drift-wall__tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--dw-tile-h, 160px);
+  flex: 0 0 var(--dw-tile-h, 160px);
+  outline: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  z-index: 1;
+}
+
+/* ─── Warm Charcoal / Graphite Editorial Card Surface ─── */
+.drift-wall__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-radius: var(--dw-radius, 14px);
+  background: linear-gradient(150deg, #272A36 0%, #1A1C25 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 18px 40px -10px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  transform: translateZ(0) scale(1);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease;
+}
+
+.drift-wall__tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.drift-wall__tile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+.drift-wall__tile-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.drift-wall__tile-cat {
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  color: #F8FAFC;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.drift-wall__tile-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drift-wall__tile-title {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #FFFFFF;
+  display: block;
+  line-height: 1.2;
+}
+
+.drift-wall__tile-desc {
+  font-family: var(--font-mono, monospace);
+  font-size: 11.5px;
+  color: #CBD5E1;
+  letter-spacing: 0.15px;
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Hover and Focus Active States (Elevated in 3D & Lime Highlight) ─── */
+.drift-wall__tile.is-active,
+.drift-wall__tile:focus-visible {
+  z-index: 50;
+}
+
+.drift-wall__tile.is-active .drift-wall__inner,
+.drift-wall__tile:focus-visible .drift-wall__inner {
+  transform: translateZ(var(--dw-lift, 32px)) scale(1.035);
+  background: linear-gradient(150deg, #323544 0%, #20232E 100%);
+  border-color: rgba(212, 255, 40, 0.9);
+  box-shadow:
+    0 24px 55px -10px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(212, 255, 40, 0.25);
+}
+
+.drift-wall__tile.is-active .drift-wall__tile-icon,
+.drift-wall__tile:focus-visible .drift-wall__tile-icon {
+  transform: scale(1.08) translateY(-1px);
+  background: rgba(212, 255, 40, 0.14);
+  border-color: rgba(212, 255, 40, 0.4);
+}
+
+.drift-wall__tile.is-active .drift-wall__tile-cat,
+.drift-wall__tile:focus-visible .drift-wall__tile-cat {
+  color: var(--accent-lime, #D4FF28);
+  border-color: rgba(212, 255, 40, 0.5);
+  background: rgba(212, 255, 40, 0.16);
+}
+
+.drift-wall__tile.is-active .drift-wall__tile-desc {
+  color: #F8FAFC;
+}
+
+.drift-wall__tile:focus-visible {
+  outline: none;
+}
+
+/* ─── Reduced Motion Mode ─── */
+@media (prefers-reduced-motion: reduce) {
+  .drift-wall__plane,
+  .drift-wall__track {
+    will-change: auto;
+  }
+}
+
+/* ─── Responsive Viewport Adaptations ─── */
+@media (max-width: 1200px) {
+  .drift-wall {
+    height: 700px;
+    min-height: 700px;
+    --dw-tile-w: 260px;
+    --dw-tile-h: 150px;
+    --dw-gap: 20px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .drift-wall {
+    height: 680px;
+    min-height: 680px;
+    --dw-tile-w: 240px;
+    --dw-tile-h: 145px;
+    --dw-gap: 18px;
+    --dw-lift: 24px;
+  }
+  .drift-wall__tile-title {
+    font-size: 15px;
+  }
+  .drift-wall__tile-desc {
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .drift-wall {
+    height: 580px;
+    min-height: 580px;
+    --dw-tile-w: 165px;
+    --dw-tile-h: 135px;
+    --dw-gap: 14px;
+    --dw-lift: 16px;
+    --dw-perspective: none;
+  }
+  .drift-wall__col {
+    width: var(--dw-tile-w, 165px);
+    flex: 0 0 var(--dw-tile-w, 165px);
+  }
+  .drift-wall__inner {
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+  .drift-wall__tile-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .drift-wall__tile-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  .drift-wall__tile-title {
+    font-size: 13.5px;
+  }
+  .drift-wall__tile-desc {
+    -webkit-line-clamp: 2;
+    font-size: 9.5px;
+    line-height: 1.35;
+  }
+}

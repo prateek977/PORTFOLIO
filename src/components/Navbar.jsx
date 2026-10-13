@@ -1,234 +1,580 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import heroPortrait from '../assets/hero-portrait.png';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const Navbar = () => {
+gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Editorial Navbar with Compact 3-Line Hamburger on Desktop & Mobile
+ * 
+ * - Desktop & Mobile: Logo on left, compact 3-line hamburger menu toggle on right
+ * - Opens a polished full-screen editorial navigation overlay with staggered GSAP reveals
+ * - Morphing hamburger-to-close animation
+ * - Accessible, keyboard navigation (Escape to close), body scroll lock
+ * - Scroll-aware sticky styling and progress bar
+ */
+export const Navbar = ({ visible = true, onBrandClick }) => {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
+  const headerRef = useRef(null);
+  const overlayRef = useRef(null);
+  const menuLinksRef = useRef([]);
+
+  const navLinks = [
+    { name: 'About', href: '#about', id: 'about' },
+    { name: 'Experience', href: '#experience', id: 'experience' },
+    { name: 'Skills', href: '#skills', id: 'skills' },
+    { name: 'Projects', href: '#projects', id: 'projects' },
+    { name: 'Achievements', href: '#achievements', id: 'achievements' },
+    { name: 'Contact', href: '#contact', id: 'contact' },
+  ];
+
+  // Header entrance animation on page load
+  useEffect(() => {
+    if (!headerRef.current) return;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    gsap.fromTo(
+      headerRef.current,
+      { y: -24, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.05 }
+    );
+  }, []);
+
+  // Scroll listener for sticky styling
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 25);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
-  ];
 
-  const handleLinkClick = () => {
-    setMobileOpen(false);
+
+  // Active section tracking with IntersectionObserver
+  useEffect(() => {
+    const sectionIds = ['home', 'about', 'experience', 'skills', 'projects', 'achievements', 'contact'];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '-25% 0px -45% 0px',
+        threshold: 0.1,
+      }
+    );
+
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
+  }, []);
+
+  // Body scroll lock & Escape key handling
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') setMenuOpen(false);
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [menuOpen]);
+
+  // GSAP animation for overlay menu items
+  useEffect(() => {
+    if (!menuOpen || !overlayRef.current) return;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const links = menuLinksRef.current.filter(Boolean);
+    gsap.fromTo(
+      links,
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power3.out', delay: 0.12 }
+    );
+  }, [menuOpen]);
+
+  const handleNavClick = (e, href) => {
+    if (menuOpen) setMenuOpen(false);
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+    if (element) {
+      e.preventDefault();
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      zIndex: 1000,
-      padding: scrolled ? '0.8rem 0' : '1.5rem 0',
-      backgroundColor: scrolled ? 'rgba(10, 10, 10, 0.85)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
-      transition: 'var(--transition-smooth)',
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        maxWidth: '100%',
-        padding: '0 4rem',
-      }}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-          }}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
-          <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            border: '2px solid var(--accent-color)',
-            boxShadow: '0 0 20px var(--accent-glow)',
-            backgroundColor: 'var(--card-bg)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <img
-              src={heroPortrait}
-              alt="PJ Logo"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </div>
-        </motion.div>
+    <>
+      {/* ─── Standalone 3-Line Hamburger Menu Toggle Button ─── */}
+      <button
+        ref={headerRef}
+        type="button"
+        className={`nav-hamburger-toggle ${menuOpen ? 'open' : ''}`}
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+        aria-expanded={menuOpen}
+        style={{
+          opacity: visible ? 1 : 0,
+          pointerEvents: visible ? 'auto' : 'none',
+        }}
+      >
+        <span className="hamburger-line line-1" />
+        <span className="hamburger-line line-2" />
+        <span className="hamburger-line line-3" />
+      </button>
 
-        {/* Desktop Nav */}
-        <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
-          <ul style={{ display: 'flex', gap: '2rem' }}>
-            {navLinks.map((link, index) => (
-              <motion.li
-                key={link.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <a
-                  href={link.href}
-                  style={{
-                    fontSize: '0.8rem',
-                    fontWeight: '600',
-                    color: 'var(--text-secondary)',
-                    letterSpacing: '1px',
-                    textTransform: 'uppercase',
-                    transition: 'var(--transition-smooth)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = '#fff';
-                    e.target.style.letterSpacing = '1.5px';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = 'var(--text-secondary)';
-                    e.target.style.letterSpacing = '1px';
-                  }}
-                >
-                  {link.name}
-                </a>
-              </motion.li>
-            ))}
-          </ul>
-
-          <motion.a
-            href="#contact"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 10px 25px var(--accent-glow)'
+      {/* ─── Polished Full-Screen Editorial Navigation Overlay (Desktop & Mobile) ─── */}
+      <div
+        ref={overlayRef}
+        className={`editorial-overlay-menu ${menuOpen ? 'visible' : ''}`}
+        aria-hidden={!menuOpen}
+      >
+        <div className="overlay-header-bar">
+          <a
+            href="#home"
+            onClick={(e) => {
+              setMenuOpen(false);
+              if (onBrandClick) onBrandClick(e);
             }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              backgroundColor: 'var(--accent-color)',
-              color: '#fff',
-              padding: '0.7rem 1.4rem',
-              borderRadius: '10px',
-              fontSize: '0.8rem',
-              fontWeight: '800',
-              fontFamily: 'var(--font-heading)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              transition: 'var(--transition-smooth)'
-            }}
+            className="navbar-brand-link"
           >
-            Hire Me
-          </motion.a>
+            <div className="brand-pj-box">PJ</div>
+            <div className="brand-text-wrap">
+              <span className="brand-name">PRATEEK JAISWAL</span>
+              <span className="brand-subtitle">SOFTWARE &amp; AUTOMATION</span>
+            </div>
+          </a>
+
+          {/* Close Button inside Overlay */}
+          <button
+            type="button"
+            className="overlay-close-btn"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <span className="close-line line-close-1" />
+            <span className="close-line line-close-2" />
+          </button>
         </div>
 
-        {/* Mobile Hamburger */}
-        <div className="nav-mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)} style={{
-          display: 'none',
-          cursor: 'pointer',
-          color: '#fff',
-          zIndex: 1002,
-        }}>
-          {mobileOpen ? <X size={28} /> : <Menu size={28} />}
+        {/* Overlay Navigation Links */}
+        <nav className="overlay-nav-body" aria-label="Expanded Navigation">
+          <ul className="overlay-nav-list">
+            {navLinks.map((link, idx) => {
+              const isActive = activeSection === link.id;
+              return (
+                <li
+                  key={link.name}
+                  ref={(el) => (menuLinksRef.current[idx] = el)}
+                  className="editorial-menu-item"
+                >
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className={`editorial-menu-link ${isActive ? 'active' : ''}`}
+                  >
+                    <span className="menu-item-index">0{idx + 1}</span>
+                    <span className="menu-item-name">{link.name}</span>
+                    <ArrowUpRight size={24} className="menu-item-arrow" />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Overlay Footer CTA & Metadata */}
+        <div className="overlay-footer-bar">
+          <div className="overlay-footer-cta-wrap">
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, '#contact')}
+              className="overlay-contact-cta"
+            >
+              <span>Initiate Contact</span>
+              <ArrowUpRight size={16} />
+            </a>
+          </div>
+
+          <div className="overlay-footer-meta">
+            <div className="footer-meta-item">
+              <span className="meta-dot" />
+              <span>PUNE, INDIA (GMT+5:30)</span>
+            </div>
+            <div className="footer-meta-item">
+              <span className="meta-status-text">AVAILABLE FOR SELECTIVE COMMISSIONS</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="nav-mobile-menu"
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100vh',
-              backgroundColor: 'rgba(10, 10, 10, 0.97)',
-              backdropFilter: 'blur(20px)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2.5rem',
-              zIndex: 1001,
-            }}
-          >
-            {navLinks.map((link, index) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                onClick={handleLinkClick}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                style={{
-                  fontSize: '1.8rem',
-                  fontWeight: '800',
-                  fontFamily: 'var(--font-heading)',
-                  color: '#fff',
-                  textTransform: 'uppercase',
-                  letterSpacing: '2px',
-                }}
-              >
-                {link.name}
-              </motion.a>
-            ))}
-            <motion.a
-              href="#contact"
-              onClick={handleLinkClick}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              whileHover={{ scale: 1.05, boxShadow: '0 10px 30px var(--accent-glow)' }}
-              style={{
-                backgroundColor: 'var(--accent-color)',
-                color: '#fff',
-                padding: '1rem 3rem',
-                borderRadius: '16px',
-                fontSize: '0.9rem',
-                fontWeight: '800',
-                fontFamily: 'var(--font-body)',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                marginTop: '1.5rem',
-              }}
-            >
-              Hire Me
-            </motion.a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      {/* ─── Inlined Scoped Editorial Styles ─── */}
       <style>{`
-        @media (max-width: 768px) {
-          .nav-desktop { display: none !important; }
-          .nav-mobile-toggle { display: block !important; }
+        .editorial-header {
+          padding: 1.15rem 0;
+          box-sizing: border-box;
         }
-        @media (min-width: 769px) {
-          .nav-desktop { display: flex !important; }
-          .nav-mobile-toggle { display: none !important; }
+
+        .editorial-header.scrolled {
+          padding: 0.75rem 0;
+        }
+
+        .navbar-inner-container {
+          width: 100%;
+          max-width: 1560px;
+          margin: 0 auto;
+          padding: 0 clamp(1.8rem, 4vw, 4.5rem);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          box-sizing: border-box;
+        }
+
+        /* Brand Styling */
+        .navbar-brand-link {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: var(--ink, #111114);
+          text-decoration: none;
+          user-select: none;
+        }
+
+        .brand-pj-box {
+          width: 32px;
+          height: 32px;
+          background-color: var(--ink, #111114);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-heading, sans-serif);
+          font-weight: 900;
+          font-size: 11px;
+          letter-spacing: 1px;
+          color: var(--accent-lime, #D4FF28);
+          border-radius: 1px;
+          transition: transform 0.25s var(--ease-out-quint, ease);
+        }
+
+        .navbar-brand-link:hover .brand-pj-box {
+          transform: scale(1.06);
+        }
+
+        .brand-text-wrap {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .brand-name {
+          font-family: var(--font-heading, sans-serif);
+          font-weight: 800;
+          font-size: 1.05rem;
+          letter-spacing: -0.03em;
+          color: var(--ink, #111114);
+          line-height: 1.15;
+        }
+
+        .brand-subtitle {
+          font-family: var(--font-mono, monospace);
+          font-size: 9.5px;
+          color: var(--ink-secondary, #4A4843);
+          text-transform: uppercase;
+          letter-spacing: 1.2px;
+          line-height: 1.3;
+        }
+
+        /* Clean 3-Line Hamburger Menu Toggle Floating Fixed at Top-Right */
+        .nav-hamburger-toggle {
+          position: fixed;
+          top: clamp(1.2rem, 2.8vh, 2rem);
+          right: clamp(1.5rem, 4vw, 3.5rem);
+          z-index: 1060;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 5.5px;
+          width: 44px;
+          height: 44px;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+          transition: transform 0.25s var(--ease-out-quint, ease);
+        }
+
+        .nav-hamburger-toggle:hover {
+          transform: scale(1.08);
+        }
+
+        .hamburger-line {
+          width: 25px;
+          height: 1.8px;
+          background-color: var(--ink, #111114);
+          border-radius: 1px;
+          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+        }
+
+        .nav-hamburger-toggle.open .line-1 {
+          transform: translateY(7.3px) rotate(45deg);
+        }
+
+        .nav-hamburger-toggle.open .line-2 {
+          opacity: 0;
+          transform: scaleX(0);
+        }
+
+        .nav-hamburger-toggle.open .line-3 {
+          transform: translateY(-7.3px) rotate(-45deg);
+        }
+
+        /* Full-Screen Editorial Overlay Menu */
+        .editorial-overlay-menu {
+          position: fixed;
+          inset: 0;
+          width: 100vw;
+          height: 100dvh;
+          background-color: rgba(244, 240, 234, 0.98);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          z-index: 1050;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: clamp(1.4rem, 3.5vh, 2.5rem) clamp(1.8rem, 5vw, 4.5rem);
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transition: opacity 0.35s ease, visibility 0.35s ease;
+          box-sizing: border-box;
+          overflow-y: auto;
+        }
+
+        .editorial-overlay-menu.visible {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+        }
+
+        .overlay-header-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          max-width: 1560px;
+          margin: 0 auto;
+          padding-bottom: 1.2rem;
+          border-bottom: none;
+        }
+
+        .overlay-close-btn {
+          width: 44px;
+          height: 44px;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.25s var(--ease-out-quint, ease);
+        }
+
+        .overlay-close-btn:hover {
+          transform: rotate(90deg);
+        }
+
+        .close-line {
+          position: absolute;
+          width: 24px;
+          height: 1.6px;
+          background-color: var(--ink, #111114);
+          border-radius: 1px;
+        }
+
+        .line-close-1 {
+          transform: rotate(45deg);
+        }
+
+        .line-close-2 {
+          transform: rotate(-45deg);
+        }
+
+        .overlay-nav-body {
+          width: 100%;
+          max-width: 1560px;
+          margin: auto auto;
+          padding: 2.5rem 0;
+        }
+
+        .overlay-nav-list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: clamp(1rem, 2.2vh, 1.8rem);
+        }
+
+        .editorial-menu-item {
+          border-bottom: 1px solid rgba(17, 17, 20, 0.08);
+          padding-bottom: clamp(0.6rem, 1.4vh, 1rem);
+        }
+
+        .editorial-menu-link {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          text-decoration: none;
+          color: var(--ink, #111114);
+          transition: transform 0.25s var(--ease-out-quint, ease), color 0.2s ease;
+        }
+
+        .editorial-menu-link:hover,
+        .editorial-menu-link.active {
+          transform: translateX(12px);
+          color: #000;
+        }
+
+        .menu-item-index {
+          font-family: var(--font-mono, monospace);
+          font-size: clamp(11px, 1vw, 13px);
+          color: var(--ink-muted, #7A766E);
+          letter-spacing: 2px;
+          font-weight: 600;
+          margin-right: clamp(1rem, 2.5vw, 2.5rem);
+          transition: color 0.2s ease;
+        }
+
+        .editorial-menu-link:hover .menu-item-index,
+        .editorial-menu-link.active .menu-item-index {
+          color: var(--ink, #111114);
+        }
+
+        .menu-item-name {
+          font-family: var(--font-heading, sans-serif);
+          font-size: clamp(2rem, 5.5vw, 4rem);
+          font-weight: 800;
+          letter-spacing: -0.035em;
+          text-transform: uppercase;
+          flex-grow: 1;
+        }
+
+        .menu-item-arrow {
+          color: var(--ink-muted, #7A766E);
+          transition: transform 0.25s var(--ease-out-quint, ease), color 0.2s ease;
+        }
+
+        .editorial-menu-link:hover .menu-item-arrow,
+        .editorial-menu-link.active .menu-item-arrow {
+          color: var(--ink, #111114);
+          transform: translate(4px, -4px);
+        }
+
+        /* Overlay Footer */
+        .overlay-footer-bar {
+          width: 100%;
+          max-width: 1560px;
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 1.5rem;
+          border-top: 1px solid rgba(17, 17, 20, 0.1);
+          flex-wrap: wrap;
+          gap: 1.2rem;
+        }
+
+        .overlay-contact-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 24px;
+          background-color: var(--ink, #111114);
+          color: var(--bg-cream, #F4F0EA);
+          font-family: var(--font-mono, monospace);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          text-decoration: none;
+          border-radius: 1px;
+          border: 1px solid var(--ink, #111114);
+          transition: background-color 0.25s ease, transform 0.25s var(--ease-out-quint, ease);
+        }
+
+        .overlay-contact-cta:hover {
+          background-color: #000;
+          transform: translateY(-2px);
+        }
+
+        .overlay-footer-meta {
+          display: flex;
+          align-items: center;
+          gap: 1.6rem;
+          font-family: var(--font-mono, monospace);
+          font-size: 10px;
+          color: var(--ink-secondary, #4A4843);
+          letter-spacing: 1px;
+        }
+
+        .footer-meta-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .meta-dot {
+          width: 6px;
+          height: 6px;
+          background-color: var(--accent-lime, #D4FF28);
+          border-radius: 50%;
+        }
+
+        .meta-status-text {
+          color: var(--ink-muted, #7A766E);
+        }
+
+        @media (max-width: 768px) {
+          .overlay-footer-bar {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          .overlay-contact-cta {
+            width: 100%;
+            justify-content: center;
+          }
+          .overlay-footer-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+          }
         }
       `}</style>
-    </nav>
+    </>
   );
 };
 

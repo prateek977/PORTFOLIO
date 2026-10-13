@@ -1,116 +1,405 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Copy, Check, ArrowUpRight } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from '../components/SocialIcons';
+import TextScramble from '../components/TextScramble';
 
-const GmailLogo = () => (
-  <img 
-    src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" 
-    alt="Gmail" 
-    style={{ width: '40px', height: '40px' }} 
-  />
-);
+gsap.registerPlugin(ScrollTrigger);
 
-const GithubLogo = () => (
-  <svg viewBox="0 0 24 24" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#FFFFFF" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.372.79 1.103.79 2.222v3.293c0 .319.21.694.825.576 4.765-1.589 8.195-6.086 8.195-11.386 0-6.627-5.373-12-12-12z"/>
-  </svg>
-);
+export const Contact = () => {
+  const sectionRef = useRef(null);
+  const [copied, setCopied] = useState(false);
+  const email = 'jaiswalprateek682@gmail.com';
 
-const LinkedinLogo = () => (
-  <svg viewBox="0 0 24 24" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#0077B5" d="M22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003zM7.12 20.452H3.558V8.995H7.12v11.457zM5.341 7.433c-1.14 0-2.066-.926-2.066-2.066 0-1.141.926-2.067 2.066-2.067 1.14 0 2.066.926 2.066 2.067 0 1.141-.926 2.066-2.066 2.066zM20.452 20.452h-3.553v-5.56c0-1.326-.025-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.658h-3.553V8.995h3.41v1.561h.046c.476-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.291z"/>
-  </svg>
-);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
 
-const SocialLink = ({ logo, name, href, delay }) => (
-  <motion.a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    initial={{ opacity: 0, scale: 0.8 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    transition={{ delay, duration: 0.5 }}
-    viewport={{ once: true }}
-    whileHover={{ 
-      y: -10, 
-      boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-      backgroundColor: 'rgba(255, 255, 255, 0.08)'
-    }}
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '1rem',
-      padding: '2rem',
-      backgroundColor: 'rgba(20, 20, 20, 0.6)',
-      borderRadius: '24px',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
-      color: 'var(--text-secondary)',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      textDecoration: 'none',
-      aspectRatio: '1/1',
-      width: '100%',
-      maxWidth: '160px',
-    }}
-  >
-    <div style={{ transform: 'scale(1.2)' }}>{logo}</div>
-    <span style={{ 
-      fontSize: '0.8rem', 
-      fontWeight: '700', 
-      textTransform: 'uppercase', 
-      letterSpacing: '1px',
-      opacity: 0.8
-    }}>
-      {name}
-    </span>
-  </motion.a>
-);
+  const socials = [
+    {
+      name: 'GitHub',
+      handle: '@prateek977',
+      url: 'https://github.com/prateek977',
+      desc: 'Open-source codebases, repositories & automation scripts',
+      icon: <GithubIcon size={18} color="currentColor" />,
+    },
+    {
+      name: 'LinkedIn',
+      handle: 'prateek-jaiswal',
+      url: 'https://www.linkedin.com/in/prateek-jaiswal-44b580377/',
+      desc: 'Professional network, client relations & engineering career',
+      icon: <LinkedinIcon size={18} color="currentColor" />,
+    },
+    {
+      name: 'Direct Email',
+      handle: 'jaiswalprateek682@gmail.com',
+      url: `mailto:${email}`,
+      desc: 'Full-time roles, engineering contracts & technical architecture',
+      icon: <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '700', fontSize: '15px' }}>@</span>,
+    },
+  ];
 
-const Contact = () => {
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const section = sectionRef.current;
+    if (!section || prefersReduced) return;
+
+    const ctx = gsap.context(() => {
+      // Eyebrow divider reveal
+      gsap.from('.contact-eyebrow .section-divider', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: '.contact-eyebrow', start: 'top 88%', once: true },
+      });
+
+      // Headline masked reveal
+      gsap.fromTo(
+        '.contact-main-headline',
+        { opacity: 0, y: 38, clipPath: 'inset(0 0 100% 0)' },
+        {
+          opacity: 1,
+          y: 0,
+          clipPath: 'inset(0 0 0% 0)',
+          duration: 0.85,
+          ease: 'power4.out',
+          scrollTrigger: { trigger: '.contact-main-headline', start: 'top 85%', once: true },
+        }
+      );
+
+      // Subtext + email group
+      gsap.from(['.contact-subtext', '.contact-email-trigger-group', '.contact-availability-meta'], {
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.contact-narrative-col', start: 'top 80%', once: true },
+      });
+
+      // Channel rows stagger
+      gsap.from('.channel-row-link', {
+        opacity: 0,
+        x: 24,
+        duration: 0.55,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.channels-list', start: 'top 82%', once: true },
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="contact" style={{ padding: '120px 0', backgroundColor: '#070707' }}>
-      <div className="container" style={{ textAlign: 'center' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          style={{ marginBottom: '5rem' }}
-        >
-          <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '1.5rem', fontWeight: '900' }}>
-            Contact
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem', lineHeight: '1.6' }}>
-            Have a project in mind or just want to say hi? I'd love to hear from you.
-          </p>
-        </motion.div>
+    <section id="contact" className="cinematic-contact-section" ref={sectionRef}>
+      <div className="container">
+        {/* Section Eyebrow */}
+        <div className="section-header-tag contact-eyebrow">
+          <span className="section-number">07</span>
+          <span className="section-divider" />
+          <TextScramble text="INITIATE COLLABORATION" className="section-label" />
+        </div>
 
-        <div className="contact-links-grid" style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '2.5rem',
-          flexWrap: 'wrap',
-          maxWidth: '800px',
-          margin: '0 auto'
-        }}>
-          <SocialLink logo={<GmailLogo />} name="Email" href="mailto:jaiswalprateek682@gmail.com" delay={0.1} />
-          <SocialLink logo={<GithubLogo />} name="GitHub" href="https://github.com/prateek977" delay={0.2} />
-          <SocialLink logo={<LinkedinLogo />} name="LinkedIn" href="https://www.linkedin.com/in/prateek-jaiswal-44b580377/" delay={0.3} />
+        {/* Editorial Contact Spread */}
+        <div className="contact-editorial-spread">
+          {/* Left Column: Direct Call to Action */}
+          <div className="contact-narrative-col">
+            <h2 className="contact-main-headline">
+              Let&apos;s build something <span className="text-black">exceptional</span> together.
+            </h2>
+            <p className="contact-subtext">
+              Whether you need a high-performance web application, custom workflow automation with n8n, or robust API integration, I am available for contract and full-time engineering roles worldwide.
+            </p>
+
+            {/* Direct Email Interaction */}
+            <div className="contact-email-trigger-group">
+              <div className="email-meta-header">
+                <span className="email-status-dot" />
+                <span className="email-status-text">DIRECT INBOX // 24-HOUR RESPONSE</span>
+              </div>
+
+              <div className="email-display-row">
+                <a href={`mailto:${email}`} className="email-link-text">
+                  {email}
+                </a>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="copy-trigger-btn"
+                  aria-label="Copy email address"
+                >
+                  {copied ? (
+                    <>
+                      <Check size={14} color="#10B981" />
+                      <span style={{ color: '#10B981' }}>COPIED</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={14} />
+                      <span>COPY ADDRESS</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Location & Availability Note */}
+            <div className="contact-availability-meta">
+              <span className="avail-label">BASE:</span>
+              <span className="avail-val">PUNE, INDIA (GMT+5:30) // REMOTE WORLDWIDE</span>
+              <span className="avail-sep">/</span>
+              <span className="avail-label">STATUS:</span>
+              <span className="avail-status-tag">ACCEPTING NEW PROJECTS</span>
+            </div>
+          </div>
+
+          {/* Right Column: Channels Index */}
+          <div className="contact-channels-col">
+            <span className="channels-eyebrow">VERIFIED NETWORKS</span>
+
+            <div className="channels-list">
+              {socials.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="channel-row-link"
+                >
+                  <div className="channel-icon-box">{s.icon}</div>
+                  <div className="channel-text-group">
+                    <span className="channel-name">{s.name}</span>
+                    <span className="channel-handle">{s.handle}</span>
+                    <span className="channel-desc">{s.desc}</span>
+                  </div>
+                  <div className="channel-arrow-box">
+                    <ArrowUpRight size={18} className="channel-arrow" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       <style>{`
-        .contact-links-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1.5rem;
-          max-width: 900px;
-          margin: 0 auto;
+        .cinematic-contact-section {
+          padding: 140px 0 120px;
+          border-top: 1px solid var(--line-dark);
+          background: var(--bg-cream);
+          position: relative;
         }
-        @media (max-width: 768px) {
-          .contact-links-grid {
+        .contact-editorial-spread {
+          display: grid;
+          grid-template-columns: 1.25fr 0.75fr;
+          gap: 5.5rem;
+          align-items: start;
+        }
+        .contact-main-headline {
+          font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+          line-height: 1.05;
+          margin-bottom: 1.8rem;
+          color: var(--ink-secondary);
+          letter-spacing: -0.035em;
+          font-weight: 800;
+          will-change: opacity, transform;
+        }
+        .text-black {
+          color: var(--ink);
+          background: linear-gradient(180deg, transparent 65%, var(--accent-lime) 65%);
+          padding: 0 4px;
+        }
+        .contact-subtext {
+          font-size: 1.05rem;
+          color: var(--ink-secondary);
+          line-height: 1.75;
+          margin-bottom: 3.2rem;
+          max-width: 600px;
+        }
+        .contact-email-trigger-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.8rem;
+          padding-bottom: 2.2rem;
+          border-bottom: 1px solid var(--line-dark);
+          margin-bottom: 2rem;
+          max-width: 620px;
+        }
+        .email-meta-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-family: var(--font-mono);
+          font-size: 10px;
+          color: var(--ink-secondary);
+          letter-spacing: 1px;
+        }
+        .email-status-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #10B981;
+          box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        .email-display-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1.5rem;
+          flex-wrap: wrap;
+        }
+        .email-link-text {
+          font-family: var(--font-heading);
+          font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+          font-weight: 800;
+          color: var(--ink);
+          letter-spacing: -0.02em;
+          transition: color 0.2s ease;
+        }
+        .email-link-text:hover {
+          color: var(--ink);
+          text-decoration: underline;
+          text-decoration-color: var(--accent-lime);
+          text-decoration-thickness: 3px;
+        }
+        .copy-trigger-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 14px;
+          background: var(--bg-cream-tint);
+          border: 1px solid var(--line-dark-strong);
+          border-radius: 4px;
+          font-family: var(--font-mono);
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--ink);
+          cursor: pointer;
+          transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+        .copy-trigger-btn:hover {
+          background: var(--ink);
+          color: #ffffff;
+          border-color: var(--ink);
+        }
+        .contact-availability-meta {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-family: var(--font-mono);
+          font-size: 11px;
+          color: var(--ink-muted);
+          flex-wrap: wrap;
+        }
+        .avail-label {
+          color: var(--ink);
+          font-weight: 700;
+        }
+        .avail-val {
+          color: var(--ink-secondary);
+        }
+        .avail-sep {
+          color: var(--line-dark-strong);
+        }
+        .avail-status-tag {
+          color: var(--ink);
+          background: var(--accent-lime);
+          padding: 2px 6px;
+          border-radius: 2px;
+          font-weight: 700;
+        }
+        .contact-channels-col {
+          display: flex;
+          flex-direction: column;
+        }
+        .channels-eyebrow {
+          font-family: var(--font-mono);
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--ink);
+          letter-spacing: 1.5px;
+          padding-bottom: 1.2rem;
+          border-bottom: 1px solid var(--line-dark);
+          margin-bottom: 0.5rem;
+        }
+        .channels-list {
+          display: flex;
+          flex-direction: column;
+        }
+        .channel-row-link {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1.8rem 0;
+          border-bottom: 1px solid var(--line-dark);
+          text-decoration: none;
+          color: var(--ink);
+          transition: border-color 0.3s ease, transform 0.3s var(--ease-out-quint);
+          will-change: opacity, transform;
+        }
+        .channel-row-link:hover {
+          border-bottom-color: var(--ink);
+          transform: translateX(4px);
+        }
+        .channel-icon-box {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: var(--bg-cream-dark);
+          border: 1px solid var(--line-dark);
+          display: grid;
+          place-items: center;
+          flex-shrink: 0;
+          margin-right: 1.2rem;
+          color: var(--ink);
+          transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+        .channel-row-link:hover .channel-icon-box {
+          background: var(--ink);
+          color: var(--accent-lime);
+          border-color: var(--ink);
+        }
+        .channel-text-group {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          flex: 1;
+        }
+        .channel-name {
+          font-family: var(--font-heading);
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: var(--ink);
+          letter-spacing: 0.2px;
+        }
+        .channel-handle {
+          font-family: var(--font-mono);
+          font-size: 11px;
+          color: var(--ink-secondary);
+        }
+        .channel-desc {
+          font-size: 0.85rem;
+          color: var(--ink-muted);
+          margin-top: 2px;
+        }
+        .channel-arrow-box {
+          color: var(--ink-muted);
+          transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .channel-row-link:hover .channel-arrow-box {
+          transform: translate(3px, -3px);
+          color: var(--ink);
+        }
+
+        @media (max-width: 1024px) {
+          .contact-editorial-spread {
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 4rem;
           }
         }
       `}</style>
